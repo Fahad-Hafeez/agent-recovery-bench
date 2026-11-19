@@ -1,0 +1,86 @@
+\section{Discussion}\label{sec:discussion}
+
+\paragraph{Which failure signals predict successful recovery?} Three, in descending order of
+strength. \emph{Class} is the dominant predictor, and specifically whether the class has a cheap
+local operator: misuse and contradictory evidence are repaired at roughly 96\%, while planning error
+(41\%) and objective drift (52\%) are not, because their repair requires reconstructing intent that
+is not present in any observation. \emph{Timing} is second: detection before propagation is worth
+roughly \EarlyGap{} points of recovery within the same policy. \emph{Signal type} is third and is
+what makes class prediction possible at all---error codes alone detect 64\% of harmful faults, and
+adding staleness, conflict, policy-conformance and progress features recovers the rest. Notably, the
+predictors that matter are \emph{structural}, not stylistic: token counts, latency and retry counts
+carry almost no information about whether a repair will succeed.
+
+\paragraph{Repair has a ceiling that detection cannot lift.} The most useful negative result here is
+the shape of the failure: detection AUC near 0.8 with recovery at 61\%. Even a perfect detector would
+not close the gap, because the remaining failures are class-confusion and operator-locality problems.
+This reframes the research agenda. Work that improves monitors (better step-level classifiers,
+process reward models, LLM critics) attacks the smaller half of the problem. The larger half is
+\emph{repair operators}: re-anchoring an objective, or replanning from a damaged belief state, is a
+different capability from noticing that something is wrong, and it is where the numbers are low.
+
+The LLM-controller experiment points the same way. The classes it repairs as well as the rules are
+exactly the ones whose operator is named after their symptom (misuse, staleness); the classes whose
+repair requires reconstructing intent collapse to retries. Operator locality, not signal visibility,
+is again what separates repair from detection.
+
+\paragraph{The learned-policy result is a data problem, not a modelling problem.} Our ranker failed
+to beat the canonical mapping. We could have hidden this by tuning the candidate set, and we chose
+not to, because the diagnosis is the interesting part: recovery policy learning from logged
+trajectories is an off-policy problem, and the logging policy never takes the actions we need to
+evaluate. Fixing it requires exploration in the sandbox (a small amount of deliberate operator
+randomisation during data collection) rather than a better model class. That is a concrete,
+actionable design for the next version of the benchmark, and it is exactly the kind of finding a
+benchmark should produce about itself.
+
+\paragraph{Why state-verified scoring is not optional.} The self-report gap (\ClaimedPct\% claimed
+vs \VerifiedPct\% verified) is the clearest practical lesson. It is not that agents lie; it is that
+the information needed to know they failed is not in the transcript. In the migration family a lost
+update is invisible to an agent that only sees what it wrote. Any evaluation based on transcript
+inspection, LLM-judge grading, or self-reported completion is measuring confidence, not reliability.
+
+\paragraph{What a leaderboard should and should not reward.} \arb{} is designed so that a system
+cannot win by being conservative (containment is scored separately and counts as failure to
+recover), by being verbose (tokens are costed), by retrying (retry-only is a baseline at 0\%), or by
+claiming success (claims are ignored). What it rewards is conditional recovery at bounded cost with
+containment on the unrecoverable class. Because the harmful set is fixed by the screen, every
+entrant is scored on the same faults, which is what makes cross-system comparison meaningful.
+
+\paragraph{Limitations and threats to validity}\label{sec:limits}
+
+\begin{itemize}
+\item \textbf{Simulation.} Every environment is a deterministic Python world. Real tools are
+partially observable, non-deterministic, and slow; real failures are heavily correlated with load,
+version skew and human behaviour. \arb{} measures \emph{relative} reliability under controlled
+faults. It cannot tell you an agent's production recovery rate, and a system that ranks first here
+may not rank first in deployment.
+\item \textbf{Scripted agents, LLM controller.} The agents that execute tasks are scripted workflow
+executors with a known SOP. They are a strong control (deterministic, belief-grounded, replayable) and
+a narrow sample of agent behaviour. We supplement them with a local 7B model used as the
+\emph{recovery controller} (\LLMRecovery\% versus \LLMRuleRecovery\% for the rules on the same
+pairs), which is a capability result about operator selection, not about planning. A frontier model
+driving both the plan and the repair is still not evaluated, so the numbers characterise the
+\emph{harness and the fault set} rather than any deployed model.
+\item \textbf{Harm screening induces selection.} Excluding inert faults biases the retained set
+toward faults with large downstream reach, which inflates apparent harmfulness and may make
+recovery look harder than it is for the average injection. We chose this because the alternative---a
+denominator containing faults that no monitor could be blamed for---makes recall uninterpretable.
+\item \textbf{Cluster bootstrap over templates.} With a few dozen templates the bootstrap is
+coarse; intervals should be read as indicating order of magnitude, not third-decimal precision.
+\item \textbf{Single lab, single author.} Labels are defined by an injection program, which removes
+annotator disagreement but also removes the chance to discover classes we did not think of. Natural
+faults partially mitigate this, and their class agreement (\NaturalAgreement\%) is encouraging, but
+the taxonomy is not exhaustive.
+\item \textbf{Cost model.} The price sheet is a fixed artefact; USD figures are a transparent
+normalisation, not a market forecast.
+\end{itemize}
+
+\paragraph{Ethics and safety.} Fault injection is confined to sandboxed, non-production
+environments with no external side effects; no real refunds, orders or migrations occur. The
+benchmark's emphasis on containment is deliberate: an agent that stops mutating when it does not
+understand the world is safer, and scoring containment separately prevents the benchmark from
+rewarding agents that push through uncertainty. Releasing a recovery policy that is only evaluated
+in sandbox is a real risk---it invites deployment outside the tested boundary---so the released
+ranker is packaged with an explicit out-of-scope statement, and the leaderboard protocol requires
+sandbox evaluation of any submitted policy. We do not release attack tooling: the injection
+programs perturb only the benchmark's own environments.

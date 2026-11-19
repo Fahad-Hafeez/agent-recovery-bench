@@ -1,0 +1,20 @@
+# Black-box monitor regime: harness telemetry flags are hidden.
+# This is the detectability-gap experiment (paper Sec. 5.1, Fig. 2).
+version: arb-1.0.0-blackbox
+price_sheet: arb-price-2026.11
+
+families: [tickets, migration, inventory, procurement]
+tasks:
+  templates: [B, C]
+  configs: [cfg6]
+  seeds: [0, 1]
+  horizon_class: short
+
+policies: [rule_based, model_based]
+monitor_modes: [blackbox]
+
+definition: >
+  In blackbox mode the step signals _stale_flag, _conflict_flag and _message_lost
+  are zeroed before the monitor sees them. Error codes, payloads, version
+  counters, token counts and timing remain. No detector may read the fault plan,
+  the injection step, expected state, or the grader verdict in either regime.

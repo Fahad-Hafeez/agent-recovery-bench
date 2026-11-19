@@ -1,0 +1,19 @@
+# Wiring check only: two tasks per family, one seed, one config.
+# Verifies that every (family, fault, policy) combination executes and grades.
+version: arb-1.0.0-smoke
+price_sheet: arb-price-2026.11
+
+families: [tickets, migration, inventory, procurement]
+tasks:
+  templates: [A]
+  configs: [cfg1]
+  seeds: [0]
+  horizon_class: short
+
+policies: [no_recovery, retry_only, rule_based, model_based]
+monitor_modes: [instrumented]
+
+note: >
+  Run `python scripts/smoke.py` for the behavioural checks (fault-free baselines
+  must succeed, faults must be exercised, recovery must not exceed 100%).
+  This config is what `scripts/run_experiments.py --preset smoke` loads.

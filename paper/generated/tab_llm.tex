@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering\small
+\caption{Operator selection by a language model versus the canonical mapping, on identical
+harmful pairs (\LLMPairs\ sampled harmful pairs, local model \texttt{\LLMModel}, detector held fixed at the rule monitor). The detector, the recovery programs and the grader are shared,
+so the difference is attributable to which operator is applied.}
+\label{tab:llm}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Failure class & $n$ & Rule-based & LLM & $\Delta$ (pp) \\
+\midrule
+invalid\_arguments & 44 & 95.5 & 95.5 & +0.0 \\
+stale\_state & 30 & 80.0 & 80.0 & +0.0 \\
+contradictory\_evidence & 44 & 95.5 & 0.0 & -95.5 \\
+planning\_error & 30 & 33.3 & 0.0 & -33.3 \\
+communication\_failure & 11 & 81.8 & 0.0 & -81.8 \\
+objective\_drift & 41 & 46.3 & 0.0 & -46.3 \\
+unrecoverable\_external\_error & 40 & 0.0 & 0.0 & +0.0 \\
+All & 240 & 60.8 & 27.5 & +33.3 \\
+\bottomrule
+\end{tabular}
+\end{table}

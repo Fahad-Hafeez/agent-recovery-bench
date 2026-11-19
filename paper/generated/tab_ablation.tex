@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering\small
+\caption{Signal ablation for the rule-based detector: each row removes one
+feature family and reports event-level detection rate. Error codes carry the most
+mass; removing policy conformance or version/staleness loses a comparable share,
+which is why a purely error-driven monitor is insufficient.}
+\label{tab:ablation}
+\begin{tabular}{@{}lc@{}}
+\toprule
+Feature set & Detected (\%) \\
+\midrule
+full & 88.0 \\
+$-$ error\_codes & 64.0 \\
+$-$ version\_staleness & 74.0 \\
+$-$ conflict & 80.0 \\
+$-$ communication & 88.0 \\
+$-$ progress & 88.0 \\
+$-$ policy\_conformance & 74.0 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,114 @@
+\section{The \arb{} Benchmark}\label{sec:bench}
+
+\subsection{A compact, signal-defined failure taxonomy}
+
+\arb{} uses exactly seven failure classes. The design constraint was that a class must be
+(1) \emph{observable}---there exists a monitor-visible signal that discriminates it; (2)
+\emph{injectable}---we can realise it deterministically inside a tool environment; and (3)
+\emph{actionable}---a specific repair operator is prescribed. Table~\ref{tab:taxonomy} lists them
+with detectability, canonical remediation, and recoverability.
+
+\begin{table*}[t]
+\centering
+\small
+\caption{The \arb{} failure taxonomy. \emph{Detectability} is a property of the signal, not of a
+model: \emph{surface} classes are visible in error codes or version counters, \emph{latent} classes
+require cross-referencing evidence or the objective specification. \emph{Canonical remediation} is
+the operator a domain expert prescribes; it defines the rule-based reference policy.}
+\label{tab:taxonomy}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+Class & Detectability & Track & Canonical remediation & Recoverable \\
+\midrule
+invalid\_arguments & surface & single+multi & \texttt{revalidate\_args} & yes \\
+stale\_state & surface & single+multi & \texttt{re\_read\_authoritative} & yes \\
+contradictory\_evidence & latent & single+multi & \texttt{refresh\_state} & yes \\
+planning\_error & latent & single+multi & \texttt{replan} & yes \\
+communication\_failure & surface & multi & \texttt{resync\_message} & yes \\
+objective\_drift & latent & single+multi & \texttt{reanchor\_objective} & yes \\
+unrecoverable\_external\_error & surface & single+multi & \texttt{escalate\_abort} & no (contain) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The split between \emph{surface} and \emph{latent} is the load-bearing distinction. A surface class
+announces itself: the tool returns a schema violation, or a read carries a version counter older
+than the current one. A latent class does not: contradictory evidence is two {\em individually
+plausible\/} values for the same field, planning error is a well-formed step that serves the wrong
+subgoal, and objective drift is a locally sensible action that no longer serves the stated goal.
+Latent classes require an internal model of what the task \emph{should} be doing, which is precisely
+what a monitor built only on error codes lacks.
+
+\texttt{escalate\_abort} is deliberately not a repair. For an unrecoverable external error the
+correct behaviour is to stop mutating, leave the world consistent, and hand off. We therefore score
+containment (no successful mutation after the fault) separately from recovery, and we never count a
+containment as a recovery.
+
+\subsection{Environments and the reference agent}
+
+Four families, each a deterministic Python world with a version counter and a bounded history:
+
+\begin{itemize}
+\item \textbf{Refund desk (\texttt{tickets}).} Support tickets with a refund policy whose arithmetic
+(constituent caps, prior refunds, order totals) must be recomputed each time. The SOP includes a
+check-then-act re-read before moving money, which makes stale-read faults physically costly.
+\item \textbf{Dual-store migration (\texttt{migration}).} A source store and a migrated store; the
+agent copies records and must reconcile. Background writers touch only objects the agent has not
+read, so silent lost updates are possible and a completion claim can be wrong.
+\item \textbf{Inventory accounting (\texttt{inventory}).} An auditable invariant
+(\texttt{on\_hand} $+$ $\sum$ \texttt{adjustments} $=$ \texttt{ledger}) plus a \texttt{close\_period}
+gate. Corrections are made by posting compensating adjustments, never by editing history.
+\item \textbf{Procurement desk (\texttt{procurement}).} Three roles---planner, buyer, verifier---on a
+message bus with an incremental order protocol (cancel and re-issue is the repair path). This is the
+multi-agent family; the others are single-agent.
+\end{itemize}
+
+The \emph{reference agent} is a scripted workflow executor. It knows the procedure and the
+environment's affordances (\texttt{solve}/\texttt{next\_step}) but has \emph{no access to ground
+truth}: every tool argument is derived from that role's belief, i.e.\ from observations it has
+actually received and applied. This design choice is what makes the hard classes real. If the
+argument were computed from the world, a stale read would be harmless; because it is computed from
+belief, a stale read propagates into the next mutation. Similarly, a dropped message is not merely
+``an event we log''---the receiving role's belief never updates, so it acts on the wrong sender or
+the wrong quantity.
+
+Agent-side ``natural'' faults (omitting a required verification step, using a superseded value,
+mis-ordering a two-phase mutation) can be switched on to produce failures that were not injected by
+the harness; we use them as a provenance-shift check (Table~\ref{tab:natural}).
+
+\subsection{Tasks, splits, and leakage control}
+
+A task is a (family, template, configuration, seed) tuple. Templates define the procedure shape;
+configurations vary concurrency, dataset size, and which optional branches fire. Splits hold out
+both:
+
+\begin{itemize}
+\item \textbf{train} --- templates A/B $\times$ configs 1--3;
+\item \textbf{dev} --- templates A/B $\times$ config 5;
+\item \textbf{test-id} --- templates A/B $\times$ config 6 (unseen configuration, higher concurrency);
+\item \textbf{test-ood} --- template C (unseen template).
+\end{itemize}
+
+Detector thresholds are tuned on \emph{dev}; the supervised detector and the recovery ranker are fit
+on \emph{train} only. Nothing in test-id or test-ood is seen during fitting, and fault schedules are
+generated per task from a seeded RNG so that memorising a schedule is not a viable strategy.
+
+\subsection{Fault injection as a program}
+
+Each class is realised by a small \emph{operator program} applied at a scheduled step: a sequence of
+primitive perturbations (corrupt an argument, re-serve an older snapshot, plant a conflicting value,
+suppress a message, drop a subgoal, swap the objective, raise a terminal tool error). \texttt{inject\_at}
+is aligned to the step that calls the targeted tool---the last read of that field, or the first
+mutation---so a scheduled fault is always actually exercised. The same program is used for every
+family, which is what lets us pool classes across environments.
+
+\subsection{Harm screening}
+
+Not every injection changes the outcome. A stale read that is never used, or a duplicated message
+that is idempotent, leaves the task successful. We therefore run every (task, fault) pair under
+\texttt{no\_recovery} and keep only pairs where the task actually fails: \NumHarmful{} of
+\NumPairs{} (\InertPct\% inert, discarded). This has two effects. It defines the denominator, so
+``recovery rate'' means ``fraction of \emph{harmful} faults repaired''. And it is conservative for
+detection: faults that are present but harmless are never counted as false negatives or as
+detections. The cost is a selection effect---the retained set is biased toward faults with large
+downstream reach---which we discuss in Sec.~\ref{sec:limits}.

@@ -1,0 +1,352 @@
+{
+ "baseline": "results/episodes.jsonl",
+ "by_class": {
+  "communication_failure": {
+   "llm": 0.0,
+   "llm_contained": 0.0,
+   "n": 11,
+   "rule": 0.8181818181818182
+  },
+  "contradictory_evidence": {
+   "llm": 0.0,
+   "llm_contained": 0.0,
+   "n": 44,
+   "rule": 0.9545454545454546
+  },
+  "invalid_arguments": {
+   "llm": 0.9545454545454546,
+   "llm_contained": 0.0,
+   "n": 44,
+   "rule": 0.9545454545454546
+  },
+  "objective_drift": {
+   "llm": 0.0,
+   "llm_contained": 0.0,
+   "n": 41,
+   "rule": 0.4634146341463415
+  },
+  "planning_error": {
+   "llm": 0.0,
+   "llm_contained": 0.0,
+   "n": 30,
+   "rule": 0.3333333333333333
+  },
+  "stale_state": {
+   "llm": 0.8,
+   "llm_contained": 0.0,
+   "n": 30,
+   "rule": 0.8
+  },
+  "unrecoverable_external_error": {
+   "llm": 0.0,
+   "llm_contained": 0.25,
+   "n": 40,
+   "rule": 0.0
+  }
+ },
+ "config": {
+  "base_url": "http://127.0.0.1:11434",
+  "cache": "results/llm_cache.jsonl",
+  "model": "qwen2.5-coder:7b",
+  "temperature": 0.0
+ },
+ "llm": {
+  "by_class": {
+   "communication_failure": {
+    "detected_rate": 1.0,
+    "n": 11,
+    "recovery_rate": 0.0
+   },
+   "contradictory_evidence": {
+    "detected_rate": 1.0,
+    "n": 44,
+    "recovery_rate": 0.0
+   },
+   "invalid_arguments": {
+    "detected_rate": 1.0,
+    "n": 44,
+    "recovery_rate": 0.9545454545454546
+   },
+   "objective_drift": {
+    "detected_rate": 0.975609756097561,
+    "n": 41,
+    "recovery_rate": 0.0
+   },
+   "planning_error": {
+    "detected_rate": 0.6666666666666666,
+    "n": 30,
+    "recovery_rate": 0.0
+   },
+   "stale_state": {
+    "detected_rate": 0.8666666666666667,
+    "n": 30,
+    "recovery_rate": 0.8
+   },
+   "unrecoverable_external_error": {
+    "detected_rate": 1.0,
+    "n": 40,
+    "recovery_rate": 0.0
+   }
+  },
+  "by_family": {
+   "inventory": {
+    "n": 53,
+    "recovery_rate": 0.20754716981132076
+   },
+   "migration": {
+    "n": 52,
+    "recovery_rate": 0.40384615384615385
+   },
+   "procurement": {
+    "n": 73,
+    "recovery_rate": 0.1780821917808219
+   },
+   "tickets": {
+    "n": 62,
+    "recovery_rate": 0.3387096774193548
+   }
+  },
+  "by_monitor_mode": {
+   "instrumented": {
+    "claimed_rate": 0.5916666666666667,
+    "containment_rate": 0.25,
+    "detected_rate": 0.9375,
+    "detection": {
+     "auc": 0.8440599208053051,
+     "ece": 0.17462931227130388,
+     "f1": 0.6692721055202736,
+     "n_positive": 1275,
+     "n_steps": 2919,
+     "precision": 0.8873056994818653,
+     "recall": 0.5372549019607843,
+     "type_acc_any_positive": 0.5372549019607843
+    },
+    "n": 240,
+    "n_unrecoverable": 40,
+    "recovery_ci": [
+     0.2383177570093458,
+     0.6333333333333333
+    ],
+    "recovery_rate": 0.275,
+    "selfreport_gap": 0.31666666666666665,
+    "tokens_mean": 13458.608333333334,
+    "tool_calls_mean": 12.1625,
+    "usd_per_episode": 0.043262,
+    "usd_per_recovered": 0.157318,
+    "usd_total": 10.382996,
+    "verified_rate": 0.275
+   }
+  },
+  "coverage": 0.2787456445993031,
+  "n_harmful_pairs": 861,
+  "n_missing_pairs": 621,
+  "n_pairs_covered": 240,
+  "overall": {
+   "claimed_rate": 0.5916666666666667,
+   "containment_rate": 0.25,
+   "detected_rate": 0.9375,
+   "detection": {
+    "auc": 0.8440599208053051,
+    "ece": 0.17462931227130388,
+    "f1": 0.6692721055202736,
+    "n_positive": 1275,
+    "n_steps": 2919,
+    "precision": 0.8873056994818653,
+    "recall": 0.5372549019607843,
+    "type_acc_any_positive": 0.5372549019607843
+   },
+   "n": 240,
+   "n_unrecoverable": 40,
+   "recovery_ci": [
+    0.2383177570093458,
+    0.6333333333333333
+   ],
+   "recovery_rate": 0.275,
+   "selfreport_gap": 0.31666666666666665,
+   "tokens_mean": 13458.608333333334,
+   "tool_calls_mean": 12.1625,
+   "usd_per_episode": 0.043262,
+   "usd_per_recovered": 0.157318,
+   "usd_total": 10.382996,
+   "verified_rate": 0.275
+  },
+  "policy": [
+   "llm_based"
+  ],
+  "protocol_checks": {
+   "claims_not_scored": true,
+   "cluster_unit": "task template",
+   "containment_not_recovery": true,
+   "harmful_set_from_baseline": true,
+   "state_verified_outcomes": true
+  },
+  "status": "scored",
+  "warnings": [
+   "621 harmful pairs have no submission episode; recovery is reported over covered pairs only",
+   "coverage below 95%: entry is incomplete for the frozen set"
+  ]
+ },
+ "paired": {
+  "ci": [
+   0.16666666666666674,
+   0.35046728971962615
+  ],
+  "diff": 0.33333333333333326,
+  "label_a": "rule_based",
+  "label_b": "llm_based",
+  "mean_a": 0.6083333333333333,
+  "mean_b": 0.275,
+  "n_pairs": 240,
+  "status": "ok"
+ },
+ "rule_based": {
+  "by_class": {
+   "communication_failure": {
+    "detected_rate": 1.0,
+    "n": 11,
+    "recovery_rate": 0.8181818181818182
+   },
+   "contradictory_evidence": {
+    "detected_rate": 1.0,
+    "n": 44,
+    "recovery_rate": 0.9545454545454546
+   },
+   "invalid_arguments": {
+    "detected_rate": 1.0,
+    "n": 44,
+    "recovery_rate": 0.9545454545454546
+   },
+   "objective_drift": {
+    "detected_rate": 0.975609756097561,
+    "n": 41,
+    "recovery_rate": 0.4634146341463415
+   },
+   "planning_error": {
+    "detected_rate": 0.6666666666666666,
+    "n": 30,
+    "recovery_rate": 0.3333333333333333
+   },
+   "stale_state": {
+    "detected_rate": 0.8666666666666667,
+    "n": 30,
+    "recovery_rate": 0.8
+   },
+   "unrecoverable_external_error": {
+    "detected_rate": 1.0,
+    "n": 40,
+    "recovery_rate": 0.0
+   }
+  },
+  "by_family": {
+   "inventory": {
+    "n": 53,
+    "recovery_rate": 0.7358490566037735
+   },
+   "migration": {
+    "n": 52,
+    "recovery_rate": 0.8076923076923077
+   },
+   "procurement": {
+    "n": 73,
+    "recovery_rate": 0.4246575342465753
+   },
+   "tickets": {
+    "n": 62,
+    "recovery_rate": 0.5483870967741935
+   }
+  },
+  "by_monitor_mode": {
+   "instrumented": {
+    "claimed_rate": 0.775,
+    "containment_rate": 1.0,
+    "detected_rate": 0.9375,
+    "n": 240,
+    "n_unrecoverable": 40,
+    "recovery_ci": [
+     0.5887850467289719,
+     0.8
+    ],
+    "recovery_rate": 0.6083333333333333,
+    "selfreport_gap": 0.16666666666666674,
+    "tokens_mean": 14181.1375,
+    "tool_calls_mean": 12.525,
+    "usd_per_episode": 0.04544,
+    "usd_per_recovered": 0.074696,
+    "usd_total": 10.905606,
+    "verified_rate": 0.6083333333333333
+   }
+  },
+  "coverage": 0.2787456445993031,
+  "n_harmful_pairs": 861,
+  "n_missing_pairs": 621,
+  "n_pairs_covered": 240,
+  "overall": {
+   "claimed_rate": 0.775,
+   "containment_rate": 1.0,
+   "detected_rate": 0.9375,
+   "n": 240,
+   "n_unrecoverable": 40,
+   "recovery_ci": [
+    0.5887850467289719,
+    0.8
+   ],
+   "recovery_rate": 0.6083333333333333,
+   "selfreport_gap": 0.16666666666666674,
+   "tokens_mean": 14181.1375,
+   "tool_calls_mean": 12.525,
+   "usd_per_episode": 0.04544,
+   "usd_per_recovered": 0.074696,
+   "usd_total": 10.905606,
+   "verified_rate": 0.6083333333333333
+  },
+  "policy": [
+   "rule_based"
+  ],
+  "protocol_checks": {
+   "claims_not_scored": true,
+   "cluster_unit": "task template",
+   "containment_not_recovery": true,
+   "harmful_set_from_baseline": true,
+   "state_verified_outcomes": true
+  },
+  "status": "scored",
+  "warnings": [
+   "621 harmful pairs have no submission episode; recovery is reported over covered pairs only",
+   "coverage below 95%: entry is incomplete for the frozen set"
+  ]
+ },
+ "sample": {
+  "by_class": {
+   "communication_failure": 11,
+   "contradictory_evidence": 44,
+   "invalid_arguments": 44,
+   "objective_drift": 41,
+   "planning_error": 30,
+   "stale_state": 30,
+   "unrecoverable_external_error": 40
+  },
+  "by_family": {
+   "inventory": 53,
+   "migration": 52,
+   "procurement": 73,
+   "tickets": 62
+  },
+  "consulted": 225,
+  "harmful_pairs": 861,
+  "n": 240
+ },
+ "usage": {
+  "actions": {
+   "refresh_state": 26,
+   "retry": 136,
+   "revalidate_args": 63
+  },
+  "cache_hits": 183,
+  "calls": 42,
+  "fallbacks": 0,
+  "seconds": 3438.597636461258,
+  "tokens_in": 13984,
+  "tokens_out": 1122,
+  "wall_seconds": 619.6
+ }
+}

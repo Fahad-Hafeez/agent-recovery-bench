@@ -1,0 +1,7 @@
+# Archives must be byte-identical across platforms: the paper claims that re-running
+# paper/analysis.py leaves the generated tables unchanged, which only holds if a
+# checkout uses the same line endings the generator writes (LF).
+* text=auto eol=lf
+*.pdf binary
+*.parquet binary
+*.png binary

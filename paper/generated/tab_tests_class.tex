@@ -1,0 +1,19 @@
+\begin{table}[!ht]
+\centering\scriptsize
+\setlength{\tabcolsep}{4pt}
+\caption{Per-class McNemar tests, rule-based versus model-based, Holm-corrected across the seven classes (significant in 2 of 7). Where the two policies differ at all, they differ in favour of the canonical mapping; the remaining classes agree closely, which is the claim the class table makes: repair depends on the operator, not the selector.}
+\label{tab:appendix_tests_class}
+\begin{tabular}{@{}lrrrcc@{}}
+\toprule
+Failure class & Pairs & $b$ (rules) & $c$ (ranker) & $p$ & $p_{\text{Holm}}$ \\
+\midrule
+invalid\_arguments & 169 & 38 & 0 & \ensuremath{<}0.001 & \ensuremath{<}0.001 \\
+stale\_state & 76 & 17 & 11 & 0.345 & 1.000 \\
+contradictory\_evidence & 158 & 0 & 0 & 1.000 & 1.000 \\
+planning\_error & 110 & 0 & 1 & 1.000 & 1.000 \\
+communication\_failure & 45 & 0 & 0 & 1.000 & 1.000 \\
+objective\_drift & 134 & 49 & 10 & \ensuremath{<}0.001 & \ensuremath{<}0.001 \\
+unrecoverable\_external\_error & 169 & 0 & 0 & 1.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

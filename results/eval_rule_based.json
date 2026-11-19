@@ -1,0 +1,149 @@
+{
+ "baseline": "data/arb_dataset.jsonl",
+ "by_class": {
+  "communication_failure": {
+   "detected_rate": 1.0,
+   "n": 12,
+   "recovery_rate": 0.75
+  },
+  "contradictory_evidence": {
+   "detected_rate": 1.0,
+   "n": 48,
+   "recovery_rate": 0.9583333333333334
+  },
+  "invalid_arguments": {
+   "detected_rate": 0.9583333333333334,
+   "n": 48,
+   "recovery_rate": 0.9583333333333334
+  },
+  "objective_drift": {
+   "detected_rate": 0.8125,
+   "n": 48,
+   "recovery_rate": 0.5625
+  },
+  "planning_error": {
+   "detected_rate": 0.6041666666666666,
+   "n": 48,
+   "recovery_rate": 0.6458333333333334
+  },
+  "stale_state": {
+   "detected_rate": 0.7291666666666666,
+   "n": 48,
+   "recovery_rate": 0.8125
+  },
+  "unrecoverable_external_error": {
+   "detected_rate": 0.9583333333333334,
+   "n": 48,
+   "recovery_rate": 0.041666666666666664
+  }
+ },
+ "by_family": {
+  "inventory": {
+   "n": 72,
+   "recovery_rate": 0.7361111111111112
+  },
+  "migration": {
+   "n": 72,
+   "recovery_rate": 0.8333333333333334
+  },
+  "procurement": {
+   "n": 84,
+   "recovery_rate": 0.4166666666666667
+  },
+  "tickets": {
+   "n": 72,
+   "recovery_rate": 0.7222222222222222
+  }
+ },
+ "by_monitor_mode": {
+  "instrumented": {
+   "claimed_rate": 0.7566666666666667,
+   "containment_rate": 0.9583333333333334,
+   "detected_rate": 0.85,
+   "detection": {
+    "auc": 0.7814114477720785,
+    "ece": 0.19025345112084696,
+    "f1": 0.44076840981856996,
+    "n_positive": 1428,
+    "n_steps": 4159,
+    "precision": 0.9260089686098655,
+    "recall": 0.28921568627450983,
+    "type_acc_any_positive": 0.28921568627450983
+   },
+   "n": 300,
+   "n_unrecoverable": 48,
+   "recovery_ci": [
+    0.6333333333333333,
+    0.71
+   ],
+   "recovery_rate": 0.6666666666666666,
+   "selfreport_gap": 0.09000000000000008,
+   "tokens_mean": 16304.566666666668,
+   "tool_calls_mean": 13.863333333333333,
+   "usd_per_episode": 0.051819,
+   "usd_per_recovered": 0.077728,
+   "usd_total": 15.545623,
+   "verified_rate": 0.6666666666666666
+  }
+ },
+ "comparison": {
+  "ci": [
+   0.0,
+   0.0
+  ],
+  "diff": 0.0,
+  "label_a": "arb_dataset.jsonl",
+  "label_b": "arb_dataset.jsonl",
+  "mean_a": 0.6666666666666666,
+  "mean_b": 0.6666666666666666,
+  "n_pairs": 300,
+  "status": "ok"
+ },
+ "coverage": 1.0,
+ "n_harmful_pairs": 300,
+ "n_missing_pairs": 0,
+ "n_pairs_covered": 300,
+ "overall": {
+  "claimed_rate": 0.7566666666666667,
+  "containment_rate": 0.9583333333333334,
+  "detected_rate": 0.85,
+  "detection": {
+   "auc": 0.7814114477720785,
+   "ece": 0.19025345112084696,
+   "f1": 0.44076840981856996,
+   "n_positive": 1428,
+   "n_steps": 4159,
+   "precision": 0.9260089686098655,
+   "recall": 0.28921568627450983,
+   "type_acc_any_positive": 0.28921568627450983
+  },
+  "n": 300,
+  "n_unrecoverable": 48,
+  "recovery_ci": [
+   0.6333333333333333,
+   0.71
+  ],
+  "recovery_rate": 0.6666666666666666,
+  "selfreport_gap": 0.09000000000000008,
+  "tokens_mean": 16304.566666666668,
+  "tool_calls_mean": 13.863333333333333,
+  "usd_per_episode": 0.051819,
+  "usd_per_recovered": 0.077728,
+  "usd_total": 15.545623,
+  "verified_rate": 0.6666666666666666
+ },
+ "policy": [
+  "rule_based"
+ ],
+ "policy_filter": "rule_based",
+ "protocol_checks": {
+  "claims_not_scored": true,
+  "cluster_unit": "task template",
+  "containment_not_recovery": true,
+  "harmful_set_from_baseline": true,
+  "state_verified_outcomes": true
+ },
+ "status": "scored",
+ "submission": "data/arb_dataset.jsonl",
+ "warnings": []
+}

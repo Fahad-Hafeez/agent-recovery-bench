@@ -1,0 +1,51 @@
+\section{Related Work}
+
+\paragraph{Task-success agent benchmarks.} $\tau$-bench \citep{yao2024taubench} established the
+modern shape of tool-agent evaluation: a domain database, a user simulator, and programmatic
+comparison of the final database state against a goal state, with the $\text{pass}^k$ metric
+measuring consistency across repeated trials. $\tau^2$-bench \citep{taubench2} extends this to
+dual-control settings where the user also acts on the shared world. WebArena
+\citep{zhou2023webarena}, Mind2Web \citep{deng2023mind2web}, AgentBench \citep{liu2023agentbench},
+GAIA \citep{mialon2023gaia}, ToolLLM \citep{qin2023toolllm} and Gorilla \citep{patil2023gorilla}
+similarly score end states. Our verifier inherits $\tau$-bench's insistence on state comparison,
+but the unit of analysis is not a task---it is a \emph{fault} inside a task, with a matched
+fault-free twin.
+
+\paragraph{Failure taxonomies and attribution.} Recent work has begun to catalogue how agents fail.
+Zhang et al.~\citep{zhang2025whowhen} build a step-level dataset of annotated failure points and study
+\emph{who} is responsible in multi-agent systems; Cemri et al.~\citep{cemri2025mast} derive a multi-agent failure
+taxonomy from traces and report that verification and inter-agent misalignment dominate.
+Suzgun et al.~\citep{suzgun2025failuretaxonomy} taxonomise ``thinking failures'' in reasoning models;
+Zhu et al.~\citep{zhu2025where} propose a trajectory-level taxonomy. \arb{} differs in what the taxonomy is
+\emph{for}. Those taxonomies describe causes; ours is built to be \emph{actionable}---each class
+carries the operator that repairs it and the signal that reveals it---and every class is paired with
+a controlled injection program so that a label is a reproducible intervention, not an annotator's
+judgement. This makes detection and recovery separately scorable, and it makes disagreement
+measurable (a detector that labels a stale read as a planning error is penalised as such).
+
+\paragraph{Self-correction and reflection.} Reflexion \citep{shinn2023reflexion}, self-debugging
+\citep{chen2024selfdebug} and self-repair \citep{olausson2024selfrepair} report gains from
+model-generated critique. A parallel literature is sceptical: Huang et al.~\citep{huang2024selfcorrect} and Kamoi et al.~\citep{kamoi2024selfcorrection} show that models often cannot correct reasoning without external
+signal, and that apparent gains come from the harness. \arb{} speaks directly to this: our
+retry-only baseline, which is the degenerate self-correction loop, recovers \RecRetry\%. Repair
+requires a \emph{diagnosis}, and the diagnosis requires evidence the model did not generate.
+
+\paragraph{Process supervision and step-level verification.} Process reward models
+\citep{lightman2023prm,uesato2022safety,cobbe2021gsm8k} score intermediate steps for correctness.
+Our detector is a step-level monitor in that tradition but with a different label semantics: the
+target is not ``is this step correct'' but ``is the trajectory in a faulty state, and of which
+class'', which is a state-estimation problem rather than a preference-learning one.
+
+\paragraph{Fault injection and chaos engineering.} Injecting faults to measure resilience is
+long-standing practice in dependable systems \citep{hsueh1997fault,scully2015fault} and in chaos
+engineering \citep{basiri2016chaos,lightstone2004chaos}. \arb{} is, structurally, a fault-injection
+campaign for agent trajectories: deterministic schedules, matched controls, and harm screening. The
+difference is that the ``system under test'' is a stochastic policy over tool calls and the
+observable is a natural-language-adjacent trajectory, so the fault must be expressed as a
+perturbation of \emph{observations} and \emph{tool effects} rather than of memory bits.
+
+\paragraph{Benchmark critique.} Raji et al.~\citep{raji2021ai} argue benchmarks are boundary objects whose
+construct validity must be argued, not assumed. We take that seriously: Sec.~\ref{sec:limits} is
+explicit about which claims the design supports (relative ranking under controlled faults) and which
+it does not (absolute production reliability). Amodei et al.~\citep{amodei2016concrete} and Hendrycks et al.~\citep{hendrycks2021ethics} list safe exploration and oversight as core problems; a monitor that
+detects and contains rather than repairs is a small concrete instance of both.

@@ -1,0 +1,39 @@
+# ARB main grid. Referenced by scripts/run_experiments.py.
+# The grid itself is implemented in arb/experiments.py so that it stays
+# versioned with the harness; this file records what a "main" run means.
+version: arb-1.0.0
+price_sheet: arb-price-2026.11
+
+families: [tickets, migration, inventory, procurement]
+
+tasks:
+  templates: [A, B, C]              # C is held out entirely (test_ood)
+  configs: [cfg1, cfg2, cfg3, cfg5, cfg6]
+  seeds: [0, 1, 2]
+  horizon_class: short
+
+splits:
+  train: {templates: [A, B], configs: [cfg1, cfg2, cfg3]}
+  dev:   {templates: [A, B], configs: [cfg5]}
+  test_id: {templates: [A, B], configs: [cfg6]}   # unseen configuration
+  test_ood: {templates: [C], configs: [cfg1, cfg2, cfg3, cfg5, cfg6]}
+
+policies: [no_recovery, retry_only, rule_based, model_based]
+detectors:
+  rules: 13 hand-written rules over 19 monitor features
+  supervised: multinomial logistic regression, 8 classes, threshold swept on dev
+monitor_modes: [instrumented, blackbox]
+
+faults:
+  classes: 7
+  schedule: seeded per task, aligned to the targeted tool
+  screen: harmful = task fails under no_recovery (inert pairs excluded)
+
+metrics:
+  detection: [precision, recall, f1, auc, type_accuracy, event_recall]
+  recovery: [recovery_rate, containment_rate, ttd, ttr, retries]
+  cost: [tool_calls, tokens, latency_ms, usd, usd_per_recovered]
+  propagation: [corrupted_fields, downstream_fields]
+  intervals: cluster bootstrap over task templates, 95%, 2000 resamples
+
+expected_runtime: ~4 minutes on one CPU core

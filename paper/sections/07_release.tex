@@ -1,0 +1,118 @@
+\section{Release and Leaderboard Protocol}\label{sec:release}
+
+\subsection{Artifacts}
+
+\begin{table}[h]
+\centering\small
+\caption{Release contents. All artefacts are produced by the pinned commit; the dataset and models
+are published on the Hugging Face Hub and mirrored in the repository that builds this PDF.}
+\label{tab:release}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Artefact & Path & Purpose \\
+\midrule
+Dataset (episodes) & \texttt{data/arb\_dataset.jsonl} & one row per (task, fault, policy) episode \\
+Dataset (steps) & \texttt{data/arb\_steps.jsonl} & one row per step, with state and labels \\
+Mini split & \texttt{data/arb\_mini.jsonl} & 120-episode smoke subset \\
+Harness & \texttt{arb/} & environments, injection, monitors, policies, metrics \\
+Detector & \texttt{models/detector.json} & supervised step classifier + calibration \\
+Ranker & \texttt{models/recovery\_ranker.json} & per-operator value models \\
+Configs & \texttt{configs/*.yaml} & exact grids for main, long-horizon, blackbox runs \\
+Scripts & \texttt{scripts/} & \texttt{run\_experiments}, \texttt{build\_dataset}, \texttt{push\_to\_hub} \\
+Cards & \texttt{docs/} & dataset card, model card, taxonomy, protocol \\
+Paper & \texttt{paper/main.pdf} & this document, with generated tables \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Leaderboard protocol}
+
+The protocol is fixed so that entries are comparable across time.
+
+\begin{enumerate}[leftmargin=1.4em]
+\item \textbf{Pinned versions.} An entry names a tag of this repository (harness), the dataset
+revision hash, and the price-sheet version. Scores are only comparable within a tag.
+\item \textbf{Fixed splits.} Fit on \emph{train} only. \emph{Dev} may be used for thresholds and
+hyper-parameters. \emph{Test-id} and \emph{test-ood} are reported, never fitted. Submitting a system
+that was tuned on test-ood is grounds for removal.
+\item \textbf{Fixed denominators.} The harmful set is defined by the frozen screen (no-recovery runs,
+seed 0--2). Every entrant is scored on the same pairs. Adding faults requires a new dataset
+revision, not a new scoreboard.
+\item \textbf{Five required numbers.} Recovery rate with 95\% cluster-bootstrap interval; detection
+precision/recall/F1/AUC (step-level) in both monitor regimes; USD per recovered episode; containment
+rate on unrecoverable faults; and the self-report gap (claimed minus verified).
+\item \textbf{Verification.} Success is read from world state only. A submission must include the
+grader-verified outcomes for its episodes; claims without state dumps are not scored.
+\item \textbf{No oracle access.} A monitor may not read the fault plan, the injection step, expected
+state, or the grader verdict. Instrumented monitoring may read harness telemetry flags; blackbox
+entries may not, and both columns are published.
+\item \textbf{Compute disclosure.} Entries report training cost and inference cost per episode.
+\item \textbf{Containment is not recovery.} Escalating on a recoverable fault scores zero recovery.
+Stopping on an unrecoverable fault scores full containment and zero recovery.
+\end{enumerate}
+
+\subsection{Reproduction}
+
+Two commands reproduce every number, table and figure in this paper from a clean checkout:
+\begin{verbatim}
+pip install -e .
+python scripts/run_experiments.py --config configs/main.yaml
+python paper/analysis.py && latexmk -pdf paper/main.tex
+\end{verbatim}
+\texttt{scripts/}\allowbreak\texttt{build\_dataset.py} regenerates the released JSONL from the
+harness, and \texttt{scripts/}\allowbreak\texttt{push\_to\_hub.py} publishes it; the latter
+requires the user's Hugging Face token and is never run automatically. Determinism is checked by \texttt{tests/run\_tests.py}, which asserts
+byte-identical trajectories for a fixed seed and the invariants the harness depends on (faults are
+exercised, success is state-verified, detection is never counted before injection).
+
+\subsection{Code and data availability}
+
+Everything needed to check a number in this paper is public and versioned. The dataset
+(episodes, steps, mini split and the \texttt{llm} controller arm) is archived at
+\url{https://huggingface.co/datasets/fahadhafeezofficial/agent-recovery-bench}; the fitted
+detector, the recovery ranker and the LLM-arm result file are archived at
+\url{https://huggingface.co/fahadhafeezofficial/agent-recovery-bench-models}. Both carry a
+revision hash, and a result is only comparable to another produced under the same harness tag
+(\texttt{arb-1.0.0}) and price sheet (\texttt{arb-price-2026.11}).
+
+The harness, the reference agents, the evaluator, the experiment grid and the analysis script
+that emits every table and figure are released under the MIT licence (\texttt{LICENSE};
+\texttt{pyproject.toml} declares the same licence) at
+\url{https://github.com/Fahad-Hafeez/agent-recovery-bench}, tagged \texttt{arb-1.0.0}, which is the version this paper was built from, and citable via
+\texttt{CITATION.cff}. The archive
+includes \texttt{results/} and the generated tables, so \texttt{pdflatex} rebuilds this PDF
+from a clean checkout without re-running the 4-minute grid; re-running
+\texttt{paper/analysis.py} must leave those files byte-identical, which is the check that the
+PDF has not drifted. \texttt{data/} is regenerable with \texttt{scripts/build\_dataset.py}
+and is not duplicated in the source archive. No credential is needed to reproduce any number;
+the only authenticated step is publishing to the Hub (	exttt{scripts/push\_to\_hub.py}), which
+reads a token from the environment and is never run automatically. The snapshot this PDF was
+built from is also downloadable as a tarball:
+\url{https://github.com/Fahad-Hafeez/agent-recovery-bench/archive/refs/tags/arb-1.0.0.tar.gz}
+
+\subsection{Author contributions}
+
+Sole author: conceived the benchmark and taxonomy, implemented the environments, fault
+programs, monitors, policies, evaluator and analysis pipeline, ran the experiments, and wrote
+the manuscript. There are no other contributors to credit or blame.
+
+\subsection{Competing interests}
+
+The author declares no competing financial or non-financial interests. No funder influenced
+the design, the analysis or the decision to release.
+
+\subsection{Funding}
+
+This work received no external funding. All experiments ran on a single CPU core; the
+LLM-controller arm used a locally served 7B model on the author's own hardware.
+
+\subsection{Extending the benchmark}
+
+New environments must implement the four-method contract (\texttt{invoke},
+\texttt{authoritative\_step}, \texttt{resync\_step}, \texttt{repair\_args}) and declare which fault
+classes they support; the injection programs are class-level and family-agnostic, so a new family
+immediately inherits all seven classes. New failure classes require a program, a canonical operator,
+and a detectability label---if a class has no operator that repairs it in at least one family, it
+belongs in the contain-only bucket alongside unrecoverable external error.

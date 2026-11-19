@@ -1,0 +1,107 @@
+\section{Harnes, Monitors, and Policies}\label{sec:method}
+
+\subsection{Episode loop and label semantics}
+
+An episode is a (task, fault, monitor, policy) tuple. The harness steps the reference agent; at each
+step the environment returns an observation, the monitor scores it, and any alarm is handed to the
+policy, which may enqueue a \emph{recovery program}---a short sequence of operator steps executed
+before the agent's own next step. Recovery therefore costs real steps and real tool calls; it is
+never a free relabelling of the transcript.
+
+Every step carries: the tool call, its arguments, expected state, observed state, whether they
+matched, a vector of monitor features, token counts, latency, and a USD cost under a versioned price
+sheet (\texttt{arb-price-2026.11}) with deterministic jitter. A trajectory additionally carries the
+fault plan (class, injection step), the detection point, the recovery action taken, the number of
+retries, and the verified outcome.
+
+Two label conventions matter and are easy to get wrong:
+
+\begin{itemize}
+\item \textbf{Detection is only counted from the injection step onward.} An alarm that fires before
+the fault exists is a false alarm, not a lucky early detection. In practice this turned the
+``time-to-detection'' distribution from contaminated to clean (Fig.~\ref{fig:ttd}), and the residual
+early-alarm rate on the harmful set is \EarlyAlarmRate\%.
+\item \textbf{Success is read from world state.} The agent's own claim is recorded as a separate
+field and is never consulted by the grader. This is what makes the self-report gap in
+Sec.~\ref{sec:results} measurable.
+\end{itemize}
+
+\subsection{Monitor features}
+
+Nineteen features are computed per step, grouped into families: error codes and argument-schema
+violations; version staleness (observed version lag, stale flag); cross-source disagreement
+(conflict flag, disagreement count); communication (message lost, sender mismatch, unacknowledged);
+policy conformance (mutation without a prior read of the mutated field, re-read violations);
+progress (no-progress runs, repeated identical calls, retry streak); and cost pressure
+(tokens and latency relative to the task's expectation). Features are computed from the observable
+trace only: no feature reads the fault plan, the injection step, the grader verdict, or expected
+state.
+
+The supervisor is evaluated under two regimes. \emph{Instrumented} exposes the harness telemetry
+flags (staleness, conflict, message-loss). \emph{Blackbox} zeroes them, leaving only error strings,
+payloads, version counters and timing---i.e.\ what an external observer with no cooperation from
+the runtime would see. The gap between regimes is the \emph{detectability gap}, and it is the honest
+measure of how much a deployment can expect from a monitor that cannot instrument its own tools.
+
+\subsection{Detectors}
+
+\paragraph{Rule detector.} Thirteen rules over the feature families, each mapping a conjunction of
+signals to a class with a confidence; the step score is the maximum over rules. Rules are
+hand-written from the taxonomy, not tuned on the test splits.
+
+\paragraph{Supervised detector.} A multinomial logistic regression over the 19 features (8 classes
+including \emph{none}), trained in numpy with class balancing and L2. It is deliberately small: with
+a few thousand labelled steps we are interested in whether the feature set carries signal, not in
+winning a modelling contest. The decision threshold is swept on \emph{dev} to maximise F1
+(selected $\tau=\SupThreshold$), and calibration is reported as ECE and Brier score since a monitor
+that is badly calibrated will flood the policy with false alarms.
+
+\subsection{Recovery policies}
+
+\begin{itemize}
+\item \textbf{No recovery.} Detector present, alarms ignored. This is the ``aggressive agent''
+baseline and defines harm.
+\item \textbf{Retry only.} On tool error, re-issue the same call up to a budget. This is the
+degenerate self-correction loop, and it is the baseline that Reflexion-style methods must beat.
+\item \textbf{Rule-based.} Detected class $\rightarrow$ canonical operator program
+(Table~\ref{tab:taxonomy}), with guards: no more than one recovery per detected event, a repeated
+-failure guard that escalates after a second identical failure, and no retries after the budget.
+\item \textbf{Model-based.} A learned \emph{recovery action ranker} chooses between the canonical
+repair for the detected class and a clean containment. The ranker is a set of per-operator logistic
+value models, $P(\text{success}\mid a, x)=\sigma(w_a^\top x + b_a)$, over the posterior class
+distribution, the alarm score, step pressure, error/staleness/conflict flags, retry streak and
+retries used. Per-operator heads are necessary: a single model over action one-hots has no
+action$\times$feature interaction, so its argmax is constant across all inputs and it degenerates to
+``which action is best on average''. Operators with fewer than 25 logged executions are not
+rankable and are excluded from the candidate set rather than being scored from a prior.
+\end{itemize}
+
+The ranker is fit on \emph{deliberate} decisions only---logged recovery choices from the rule-based
+policy on the train split. Blind retries are excluded because they are not a choice of operator, and
+including them teaches the model ``retry is bad'' as a global prior. This is off-policy learning
+from a single logging policy, and it is the main reason we expect the learned policy to underperform
+(Sec.~\ref{sec:results}); we report it as a boundary result rather than tuning it into a win.
+
+\subsection{Metrics, intervals, and cost}
+
+\paragraph{Detection.} Step-level labels (is a fault active at this step) give precision, recall, F1
+and threshold-free AUC; class accuracy among positive steps measures whether the monitor knows
+\emph{which} failure it is. Event-level recall asks whether the fault was ever detected at all.
+
+\paragraph{Recovery.} Recovery rate conditional on class, plus attempt rate (did the policy try),
+containment rate (for unrecoverable faults: no successful mutation after the fault), and
+time-to-detection (\ttd) and time-to-recovery (\ttr) in steps.
+
+\paragraph{Propagation.} Corrupted-step count (steps whose observed state diverges from expected)
+and downstream-impact count (steps that were still wrong after the fault window), reported per
+policy and per class.
+
+\paragraph{Cost.}\label{sec:cost} Tool calls, tokens, wall-clock latency and USD per episode, plus USD per
+\emph{recovered} episode---the amortised price of a repair, which is the number a deployment
+actually budgets.
+
+\paragraph{Intervals.} All intervals are 95\% cluster bootstrap \citep{efron1993bootstrap} resampling
+\emph{task templates}, not episodes: episodes sharing a template share the procedure and the fault
+schedule shape, so treating them as independent would understate uncertainty. Policy comparisons use
+a paired bootstrap over templates on the same episode set. Single-episode proportions use Wilson
+intervals \citep{wilson1927}.

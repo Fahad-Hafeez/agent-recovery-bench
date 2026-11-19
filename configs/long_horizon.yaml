@@ -1,0 +1,17 @@
+# Long-horizon slice. Only tasks whose full state and success criteria are
+# observable at every step are admitted (see paper Sec. 3.3).
+version: arb-1.0.0-long
+price_sheet: arb-price-2026.11
+
+families: [tickets, migration, inventory, procurement]
+tasks:
+  templates: [A, B]
+  configs: [cfg2]        # cfg2 raises the step budget and the object count
+  seeds: [0, 1]
+  horizon_class: long    # 2-3x steps of the main grid
+
+policies: [no_recovery, rule_based]
+note: >
+  Long-horizon tasks stress time-to-detection and downstream propagation because
+  there are many steps after the fault for damage to reach. Recovery rates are
+  expected to fall; report them separately, never pooled with the main grid.

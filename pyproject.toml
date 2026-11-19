@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arb"
+version = "1.0.0"
+description = "Agent Recovery Bench: failure detection and recovery evaluation for tool-using agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+viz = ["matplotlib>=3.7"]
+data = ["pandas>=2.0", "pyarrow>=14", "pyyaml>=6"]
+hub = ["huggingface_hub>=0.20"]
+
+[tool.setuptools]
+packages = ["arb", "arb.envs", "arb.agents", "arb.detectors"]
+
+[tool.arb]
+price_sheet = "arb-price-2026.11"

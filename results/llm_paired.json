@@ -1,0 +1,29 @@
+{
+ "a_only": 80,
+ "b_only": 0,
+ "clusters": [
+  "A",
+  "B",
+  "C"
+ ],
+ "family_size": 1,
+ "llm_recovery_rate": 0.275,
+ "n_clusters": 3,
+ "n_discordant": 80,
+ "n_pairs": 240,
+ "p_value": 1.6543612251060553e-24,
+ "paired_ci": [
+  0.16666666666666674,
+  0.35046728971962615
+ ],
+ "paired_diff": 0.33333333333333326,
+ "policy_a": "rule_based",
+ "policy_b": "llm_based",
+ "rule_recovery_rate": 0.6083333333333333,
+ "sources": {
+  "baseline": "results/episodes.jsonl",
+  "episodes": "data/arb_llm.jsonl",
+  "report": "results/llm_agent.json"
+ },
+ "test": "exact two-sided McNemar (binomial on discordant pairs)"
+}

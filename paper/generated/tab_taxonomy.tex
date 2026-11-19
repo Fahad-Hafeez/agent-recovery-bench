@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering\small
+\caption{The ARB failure taxonomy. \emph{Detectability} is a property of the
+signal, not of a model: \emph{surface} classes are visible in error codes or
+version counters, \emph{latent} classes require cross-referencing evidence or
+the objective specification. \emph{Canonical remediation} is the operator a
+domain expert prescribes; it defines the rule-based reference policy.}
+\label{tab:taxonomy}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+Class & Detectability & Track & Canonical remediation & Recoverable \\
+\midrule
+invalid\_arguments & surface & single+multi & \texttt{revalidate\_args} & yes \\
+stale\_state & surface & single+multi & \texttt{refresh\_state} & yes \\
+contradictory\_evidence & latent & single+multi & \texttt{re\_read\_authoritative} & yes \\
+planning\_error & latent & single+multi & \texttt{replan} & yes \\
+communication\_failure & surface & multi & \texttt{resync\_message} & yes \\
+objective\_drift & latent & single+multi & \texttt{reanchor\_objective} & yes \\
+unrecoverable\_external\_error & surface & single+multi & \texttt{escalate\_abort} & no (contain) \\
+\bottomrule
+\end{tabular}
+\end{table}

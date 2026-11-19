@@ -1,0 +1,78 @@
+\section{Introduction}
+
+Agents built on language models now plan, call tools, and delegate to other agents. The dominant
+way we measure them is task success: did the ticket get refunded, did the migration finish, did the
+buy order go through \citep{yao2024taubench,liu2023agentbench,zhou2023webarena}. Success rates are
+useful but they collapse three very different competencies into one bit. An agent that never
+encounters a fault, an agent that encounters a fault and silently routes around it, and an agent
+that hits a fault, notices, and repairs it are all scored as ``1''. An agent that fails because a
+tool returned a stale read and an agent that fails because it misread the objective are both
+scored as ``0''.
+
+The consequence is that we cannot answer the question practitioners actually ask when an agent
+breaks in production: \emph{would it have noticed?} A reliability claim about an agent is a claim
+about a closed loop---detect, diagnose, repair, verify---and current benchmarks only score the last
+step's shadow, whether the final answer happened to be right. Worse, the loop can look closed when
+it is not: our agents assert success in their own trajectory \emph{far} more often than they
+achieve it (Sec.~\ref{sec:results}), so a judge that reads the transcript will over-credit them.
+
+This paper asks a narrow, measurable question:
+
+\begin{quote}\itshape
+Can agent failures be detected early and recovered from reliably, and which failure signals predict
+successful recovery in multi-step tool-using and multi-agent workflows?
+\end{quote}
+
+\noindent We answer it with \arb{}, a benchmark that extends failure \emph{counting} into failure
+\emph{handling} under control. Our contributions:
+
+\begin{enumerate}[leftmargin=1.4em]
+\item \textbf{A signal-defined taxonomy} of seven classes---misuse (invalid arguments), stale state,
+contradictory evidence, planning error, communication failure, objective drift, and unrecoverable
+external error---each with a characteristic observation signature, a canonical remediation operator,
+and an explicit recoverability status (Table~\ref{tab:taxonomy}). The taxonomy is defined by what
+you can \emph{see} and what you would \emph{do}, not by which module we believe is at fault, which
+keeps labels independent of any particular agent architecture.
+
+\item \textbf{Four deterministic tool environments} with verifiable world state (refund desk,
+dual-store migration, inventory accounting with an auditable invariant, three-role procurement with
+a message bus). Outcomes are read from state, never from the agent's prose. Faults are injected on a
+schedule aligned to the step that calls the targeted tool, and every trajectory stores expected
+state, observed state, the mismatch, and the resulting harm.
+
+\item \textbf{An inert-fault screen.} We run every (task, fault) pair with no recovery first.
+\InertPct\% of injections leave the task outcome unchanged. These are excluded from detection and
+recovery denominators, so a model is never rewarded for ``detecting'' a fault that did not matter
+and recall is not inflated by faults no monitor could be blamed for missing.
+
+\item \textbf{A four-way recovery comparison}---no recovery, retry-only, rule-based (canonical
+operators), and model-based (learned operator selection)---scored on the same episodes with
+auto-verified outcomes, cluster-bootstrap confidence intervals over task templates, and a fixed
+price sheet so that cost is part of the result.
+
+\item \textbf{Release} of the dataset, deterministic harness, baseline detector and evaluator,
+optional recovery ranker, reference agents, fixed configs, and a leaderboard protocol with pinned
+versions (Sec.~\ref{sec:release}).
+\end{enumerate}
+
+\paragraph{What we find.} (i) Detection is easier than repair. A 13-rule monitor over
+heterogeneous signals reaches AUC \AucRules{}, but even with oracle-quality detection the rule-based
+policy repairs only \RecRules\% of harmful failures. (ii) Repair is class-dependent in a way that
+inverts intuition: mechanically ``hard'' classes such as contradictory evidence are repaired at
+96\%, while \emph{planning error} (41\%) and \emph{objective drift} (52\%)---the classes that
+require knowing what the task was supposed to be---are where recovery collapses. (iii) Timing
+carries real signal: episodes detected before the fault propagates are recovered \EarlyRec\% of the
+time, versus \LateRec\% for late detection. (iv) A learned operator ranker trained off-policy on
+logged decisions reaches \RecModel\%, i.e.\ it does not beat the hand-written canonical mapping; we
+report this negative result rather than tuning it away. (v) Multi-agent episodes recover less often
+than single-agent episodes on the same fault set (\MultiRecovery\% vs \SingleRecovery\%), and
+coordination faults are recoverable only when the message bus is re-synchronised---a repair
+operator that has no single-agent analogue.
+
+\paragraph{What this is not.} \arb{} is entirely simulated. It does not measure production
+reliability, and relative ordering under injected faults need not transfer to the messy failures of
+real deployments. The reference agents are scripted workflow executors with a known standard
+operating procedure and no oracle access; one experiment replaces the recovery \emph{controller}
+with a local 7B language model (Sec.~\ref{sec:results}), but no frontier model plans the tasks, and
+no frontier model is evaluated here. We state what this buys (exact control, exact verification,
+exact replay) and what it costs (external validity) in Sec.~\ref{sec:limits}.

@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use ARB, cite the paper and the archived release below."
+title: "Agent Recovery Bench: Measuring Whether Failures Are Detected Early and Repaired Reliably in Tool-Using and Multi-Agent Workflows"
+abstract: >-
+  ARB is a benchmark, dataset, deterministic harness and leaderboard protocol for failure
+  detection and recovery in multi-step tool-using and multi-agent workflows. It contributes a
+  seven-class failure taxonomy, four deterministic tool environments with state-verified
+  outcomes, a controlled fault-injection harness with harm screening, and a four-way recovery
+  comparison (no recovery, retry-only, rule-based, model-based) under a fixed price sheet.
+version: 1.0.0
+date-released: "2026-11-19"
+license: MIT
+type: software
+keywords:
+  - agents
+  - reliability
+  - failure-detection
+  - recovery
+  - tool-use
+  - multi-agent
+  - benchmark
+authors:
+  - name: "ARB authors"
+repository-code: "https://github.com/Fahad-Hafeez/agent-recovery-bench"
+repository-artifact: "https://huggingface.co/datasets/fahadhafeezofficial/agent-recovery-bench"
+identifiers:
+  - type: other
+    value: "arb-1.0.0"
+    description: "Harness tag; scores are comparable only within one tag"
+references:
+  - type: software
+    title: "Agent Recovery Bench: deterministic harness"
+    repository-artifact: "https://huggingface.co/fahadhafeezofficial/agent-recovery-bench"
+  - type: software
+    title: "Agent Recovery Bench: detector and recovery ranker"
+    repository-artifact: "https://huggingface.co/fahadhafeezofficial/agent-recovery-bench-models"
