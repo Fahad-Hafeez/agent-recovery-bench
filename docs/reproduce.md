@@ -46,7 +46,7 @@ python scripts/run_experiments.py --preset main
 Writes `results/report_main.json` and `results/episodes.jsonl`, and refits
 `models/detector.json` and `models/recovery_ranker.json`.
 
-Expected headline (arb-1.0.0, seed-stable):
+Expected headline (arb-1.0.1, seed-stable):
 
 ```
 recovery  no_recovery=0.000 retry=0.000 rules=0.609 model=0.513
@@ -151,7 +151,7 @@ python scripts/push_to_hub.py --repo <user>/agent-recovery-bench --dry-run   # i
 python scripts/push_to_hub.py --repo <user>/agent-recovery-bench             # HF_TOKEN or `hf auth login`
 ```
 
-Tag the commit you publish from (`git tag arb-1.0.0`): the leaderboard protocol identifies an
+Tag the commit you publish from (`git tag arb-1.0.1`): the leaderboard protocol identifies an
 entry by harness tag, dataset revision and price sheet, and a score without all three is not
 comparable. `CITATION.cff` names the same tag.
 

@@ -7,7 +7,7 @@ abstract: >-
   seven-class failure taxonomy, four deterministic tool environments with state-verified
   outcomes, a controlled fault-injection harness with harm screening, and a four-way recovery
   comparison (no recovery, retry-only, rule-based, model-based) under a fixed price sheet.
-version: 1.0.0
+version: 1.0.1
 date-released: "2026-11-19"
 license: MIT
 type: software
@@ -28,7 +28,7 @@ repository-code: "https://github.com/Fahad-Hafeez/agent-recovery-bench"
 repository-artifact: "https://huggingface.co/datasets/fahadhafeezofficial/agent-recovery-bench"
 identifiers:
   - type: other
-    value: "arb-1.0.0"
+    value: "arb-1.0.1"
     description: "Harness tag; scores are comparable only within one tag"
 references:
   - type: software

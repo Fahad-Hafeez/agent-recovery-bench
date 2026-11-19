@@ -7,7 +7,7 @@ reproduced from a pinned commit is not a result.
 
 A submission names:
 
-- a **harness tag** of this repository (e.g. `arb-1.0.0`),
+- a **harness tag** of this repository (e.g. `arb-1.0.1`),
 - a **dataset revision** hash (Hugging Face commit),
 - the **price-sheet version** (`arb-price-2026.11`).
 
