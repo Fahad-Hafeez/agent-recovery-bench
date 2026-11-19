@@ -4,6 +4,7 @@
 harmful pairs (\LLMPairs\ sampled harmful pairs, local model \texttt{\LLMModel}, detector held fixed at the rule monitor). The detector, the recovery programs and the grader are shared,
 so the difference is attributable to which operator is applied.}
 \label{tab:llm}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 Failure class & $n$ & Rule-based & LLM & $\Delta$ (pp) \\
@@ -18,4 +19,5 @@ unrecoverable\_external\_error & 40 & 0.0 & 0.0 & +0.0 \\
 All & 240 & 60.8 & 27.5 & +33.3 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

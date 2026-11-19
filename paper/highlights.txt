@@ -1,0 +1,7 @@
+Highlights
+
+Isolates failure detection and repair in tool-using multi-agent LLM systems.
+Seven-class fault taxonomy ties each class to its signal and repair operator.
+Success is graded from world state, never from the agent's success claim.
+Rule-based recovery repairs 60.9% of harmful faults; a learned ranker does not.
+Harness, dataset, models and leaderboard protocol are released under MIT.

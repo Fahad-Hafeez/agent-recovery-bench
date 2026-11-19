@@ -151,7 +151,7 @@ paper/          main.tex + sections + generated tables/figures
 @misc{arb2026,
   title  = {Agent Recovery Bench: Measuring Whether Failures Are Detected Early
             and Repaired Reliably in Tool-Using and Multi-Agent Workflows},
-  author = {Anonymous},
+  author = {Hafeez, Fahad},
   year   = {2026},
   note   = {Benchmark, dataset and harness. Simulated environments only.}
 }

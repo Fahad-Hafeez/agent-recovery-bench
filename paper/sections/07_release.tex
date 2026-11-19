@@ -9,6 +9,7 @@ are published on the Hugging Face Hub and mirrored in the repository that builds
 \label{tab:release}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lll@{}}
 \toprule
 Artefact & Path & Purpose \\
@@ -25,6 +26,7 @@ Cards & \texttt{docs/} & dataset card, model card, taxonomy, protocol \\
 Paper & \texttt{paper/main.pdf} & this document, with generated tables \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 \subsection{Leaderboard protocol}
@@ -56,11 +58,11 @@ Stopping on an unrecoverable fault scores full containment and zero recovery.
 \subsection{Reproduction}
 
 Two commands reproduce every number, table and figure in this paper from a clean checkout:
-\begin{verbatim}
+\begin{Verbatim}[fontsize=\footnotesize]
 pip install -e .
 python scripts/run_experiments.py --config configs/main.yaml
 python paper/analysis.py && latexmk -pdf paper/main.tex
-\end{verbatim}
+\end{Verbatim}
 \texttt{scripts/}\allowbreak\texttt{build\_dataset.py} regenerates the released JSONL from the
 harness, and \texttt{scripts/}\allowbreak\texttt{push\_to\_hub.py} publishes it; the latter
 requires the user's Hugging Face token and is never run automatically. Determinism is checked by \texttt{tests/run\_tests.py}, which asserts
@@ -91,22 +93,6 @@ the only authenticated step is publishing to the Hub (	exttt{scripts/push\_to\_h
 reads a token from the environment and is never run automatically. The snapshot this PDF was
 built from is also downloadable as a tarball:
 \url{https://github.com/Fahad-Hafeez/agent-recovery-bench/archive/refs/tags/arb-1.0.0.tar.gz}
-
-\subsection{Author contributions}
-
-Sole author: conceived the benchmark and taxonomy, implemented the environments, fault
-programs, monitors, policies, evaluator and analysis pipeline, ran the experiments, and wrote
-the manuscript. There are no other contributors to credit or blame.
-
-\subsection{Competing interests}
-
-The author declares no competing financial or non-financial interests. No funder influenced
-the design, the analysis or the decision to release.
-
-\subsection{Funding}
-
-This work received no external funding. All experiments ran on a single CPU core; the
-LLM-controller arm used a locally served 7B model on the author's own hardware.
 
 \subsection{Extending the benchmark}
 

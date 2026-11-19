@@ -3,6 +3,7 @@
 \setlength{\tabcolsep}{4pt}
 \caption{Recovery rate (\% of harmful pairs) by failure class with 95\% cluster-bootstrap intervals over task templates. \emph{Det.} is the rule monitor's event recall for that class. The unrecoverable class is reported as attempted repair; containment is scored separately.}
 \label{tab:appendix_class}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lrccccr@{}}
 \toprule
 Failure class & $n$ & No recovery & Retry only & Rule-based & Model-based & Det. \\
@@ -16,4 +17,5 @@ objective\_drift & 134 & 0.0 [0.0, 0.0] & 0.0 [0.0, 0.0] & 52.2 [44.2, 57.8] & 2
 unrecoverable\_external\_error & 169 & 0.0 [0.0, 0.0] & 0.0 [0.0, 0.0] & 0.0 [0.0, 0.0] & 0.0 [0.0, 0.0] & 100.0 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

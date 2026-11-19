@@ -8,6 +8,7 @@ positive steps. \emph{Instrumented} exposes harness telemetry flags;
 \emph{blackbox} hides them, leaving only error codes, payloads, version
 counters and timing.}
 \label{tab:detection}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}llcccccc@{}}
 \toprule
 Detector & Monitor & Prec. & Rec. & F1 & AUC & Type & Steps \\
@@ -18,4 +19,5 @@ Supervised & instrumented & 48.8 & 86.2 & 62.3 & 0.762 & 51.6 & 11,193 \\
 Supervised & blackbox & 46.0 & 81.0 & 58.7 & 0.750 & 39.9 & 1,060 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

@@ -3,6 +3,7 @@
 \setlength{\tabcolsep}{4pt}
 \caption{Step-level detection by split, per detector and monitor regime. Detection neither improves nor collapses out of distribution, which is what a taxonomy-defined monitor should show: the rules encode the signal, not the fault schedule.}
 \label{tab:appendix_split_det}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}llrcc@{}}
 \toprule
 Arm & Split & Steps & AUC & Firing rate (\%) \\
@@ -21,4 +22,5 @@ supervised / blackbox & test-id & 487 & 0.752 & 61.2 \\
 supervised / blackbox & test-ood & 573 & 0.747 & 61.1 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

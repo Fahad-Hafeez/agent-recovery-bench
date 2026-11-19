@@ -78,14 +78,16 @@ deterministic per-step jitter seeded by the episode id, so a cost figure is repr
 rather than sampled. The sheet is a transparent normalisation of token, tool-call and latency
 prices, not a market forecast.
 
+\begin{sloppypar}
 \textbf{Reproduction.} \texttt{python scripts/run\_experiments.py --preset main} writes the
 report and the episode table; \texttt{python scripts/detection\_intervals.py} replays the
 detector arm and writes the interval artifact, aborting if it cannot reproduce the report;
 \texttt{python scripts/llm\_paired\_test.py} recomputes the LLM arm's paired test from the
 released export, aborting unless it reproduces the scored aggregates;
 \texttt{python paper/analysis.py} writes every table, figure and macro here; two
-\texttt{pdflatex} passes rebuild this PDF. The harness is tag \texttt{arb-1.0.0}, and the
-dataset revision must be pinned with it for any comparison.
+\texttt{pdflatex} passes and one \texttt{bibtex} pass rebuild this PDF. The harness is tag
+\texttt{arb-1.0.0}, and the dataset revision must be pinned with it for any comparison.
+\end{sloppypar}
 
 \section{The controller prompt}\label{app:prompt}
 

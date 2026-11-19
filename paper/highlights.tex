@@ -1,0 +1,21 @@
+%% Elsevier requires highlights as a separate file (3-5 bullets, <=85 characters each).
+%% Upload this together with main.tex; the same list is typeset in the manuscript.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\pagestyle{empty}
+\begin{document}
+\begin{center}
+{\large\bfseries Highlights}\\[2pt]
+{\itshape Agent Recovery Bench: Measuring Whether Failures Are Detected Early and
+Repaired Reliably in Tool-Using and Multi-Agent Workflows}
+\end{center}
+\vspace{1em}
+\begin{itemize}\setlength{\itemsep}{6pt}
+\item Isolates failure detection and repair in tool-using multi-agent LLM systems.
+\item Seven-class fault taxonomy ties each class to its signal and repair operator.
+\item Success is graded from world state, never from the agent's success claim.
+\item Rule-based recovery repairs 60.9\% of harmful faults; a learned ranker does not.
+\item Harness, dataset, models and leaderboard protocol are released under MIT.
+\end{itemize}
+\end{document}

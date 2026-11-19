@@ -131,7 +131,7 @@ levels differ while the ordering does not. A submission that reports only
 
 ```bash
 python paper/analysis.py
-cd paper && pdflatex main.tex && pdflatex main.tex
+cd paper && pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
 ```
 
 `paper/analysis.py` reads `results/report_main.json` and `results/episodes.jsonl` and
@@ -140,7 +140,9 @@ writes every table (`paper/generated/tab_*.tex`), every figure
 (`paper/generated/macros*.tex`). No number in the PDF is typed by hand, so the paper
 cannot drift from the results: rerun step 1 and the PDF changes with it.
 
-Two passes are needed for references. On a machine without latexmk, run `pdflatex` twice.
+Two `pdflatex` passes and one `bibtex` pass are needed: the manuscript uses `elsarticle`
+with `elsarticle-num`, so the reference list is built from `paper/refs.bib`. `latexmk -pdf
+main.tex` runs all three automatically.
 
 ## 6. Publishing (needs your token)
 

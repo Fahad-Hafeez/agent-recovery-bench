@@ -20,7 +20,10 @@ keywords:
   - multi-agent
   - benchmark
 authors:
-  - name: "ARB authors"
+  - family-names: "Hafeez"
+    given-names: "Fahad"
+    affiliation: "Newcastle University, Newcastle upon Tyne, United Kingdom"
+    email: "f.hafeez2@newcastle.ac.uk"
 repository-code: "https://github.com/Fahad-Hafeez/agent-recovery-bench"
 repository-artifact: "https://huggingface.co/datasets/fahadhafeezofficial/agent-recovery-bench"
 identifiers:

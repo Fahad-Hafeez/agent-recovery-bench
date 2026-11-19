@@ -5,6 +5,7 @@ with an unseen environment configuration (higher concurrency); \emph{test\_ood}
 uses an entirely held-out template. Detectors and rankers are fit on
 \emph{train} only. Recovery rate (\%) with episode count in parentheses.}
 \label{tab:split}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 Policy & Train & Dev & Test (ID) & Test (OOD) \\
@@ -13,4 +14,5 @@ Rule-based & 60.7 (351) & 67.9 (109) & 62.4 (109) & 57.9 (292) \\
 Model-based & 49.3 (351) & 52.3 (109) & 56.0 (109) & 51.7 (292) \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

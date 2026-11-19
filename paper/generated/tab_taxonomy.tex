@@ -6,6 +6,7 @@ version counters, \emph{latent} classes require cross-referencing evidence or
 the objective specification. \emph{Canonical remediation} is the operator a
 domain expert prescribes; it defines the rule-based reference policy.}
 \label{tab:taxonomy}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lllll@{}}
 \toprule
 Class & Detectability & Track & Canonical remediation & Recoverable \\
@@ -19,4 +20,5 @@ objective\_drift & latent & single+multi & \texttt{reanchor\_objective} & yes \\
 unrecoverable\_external\_error & surface & single+multi & \texttt{escalate\_abort} & no (contain) \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

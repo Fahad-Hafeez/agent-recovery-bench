@@ -3,6 +3,7 @@
 \setlength{\tabcolsep}{4pt}
 \caption{Step-level detection with 95\% cluster-bootstrap intervals over task templates (\DetectionClusters{} clusters for the instrumented arms). Precision, recall, F1 and type accuracy are percentages; AUC is a proportion. The intervals are wide because the cluster bootstrap resamples whole templates, and three templates cannot pin a step-level rate to better than a few points. They describe the \emph{published} run: \texttt{scripts/detection\_intervals.py} replays the detector arm and aborts unless every point estimate reproduces \texttt{report\_main.json} exactly.}
 \label{tab:detection_ci}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}llccccccc@{}}
 \toprule
 Detector & Monitor & Precision & Recall & F1 & AUC & Type & Steps & Cl. \\
@@ -13,4 +14,5 @@ Supervised & instr. & 48.8 [42.4, 54.5] & 86.2 [84.7, 89.1] & 62.3 [56.5, 67.6] 
 Supervised & blackbox & 46.0 [43.7, 48.7] & 81.0 [80.5, 81.5] & 58.7 [56.7, 60.9] & 0.750 [0.747, 0.752] & 39.9 [37.4, 42.7] & 1,060 & 2 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

@@ -1,0 +1,89 @@
+%% ---------------------------------------------------------------------------
+%% Cover letter for the Journal of Systems and Software submission.
+%% One page. Every number quoted here is emitted by paper/analysis.py into
+%% paper/generated/macros*.tex; keep them in step with paper/main.tex.
+%% Build: pdflatex cover_letter.tex   ->  cover_letter.pdf
+%% ---------------------------------------------------------------------------
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[margin=0.9in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.32em}
+\setlist[itemize]{leftmargin=1.1em,itemsep=0pt,topsep=0.15em,parsep=0pt}
+
+\begin{document}
+
+{\small\textbf{Fahad Hafeez}\\
+Newcastle University, Newcastle upon Tyne, NE1 7RU, United Kingdom\\
+\href{mailto:f.hafeez2@newcastle.ac.uk}{f.hafeez2@newcastle.ac.uk}}
+
+\vspace{0.2em}
+\hrule
+\vspace{0.3em}
+
+19 November 2026
+
+The Editors-in-Chief, \emph{Journal of Systems and Software}
+
+\textbf{Re: submission of \emph{Agent Recovery Bench: Measuring Whether Failures Are
+Detected Early and Repaired Reliably in Tool-Using and Multi-Agent Workflows}}
+
+Dear Editors,
+
+I am pleased to submit the above manuscript for consideration as a research article in the
+\emph{Journal of Systems and Software}.
+
+Software built from LLM agents is judged almost entirely by task success: did the workflow
+finish? That answers none of the questions a reliability engineer has to ask---why it failed,
+whether the failure was noticed, and whether the repair was worth its cost. Existing
+benchmarks score what a system reports, so a plausible claim of success counts the same as a
+verified one. The manuscript addresses this with \emph{Agent Recovery Bench}, contributing:
+\begin{itemize}
+  \item a seven-class fault taxonomy, each class tied to its identifying signal and repair
+        operator;
+  \item four deterministic tool environments where success is graded from world state, never
+        from the agent's own report;
+  \item a fault-injection harness that replays an identical reference trajectory with and
+        without a scheduled fault, screening out injections that cause no harm;
+  \item a protocol comparing no recovery, retry-only, rule-based and model-based recovery under
+        a fixed price sheet.
+\end{itemize}
+
+Across 861 harmful fault pairs and 4,920 episodes, a rule-based detector reaches step-level AUC
+0.772 (F1 51.5) and rule-based recovery repairs 60.9\% of harmful failures, against 0.0\% with
+no recovery and 0.0\% with retries alone; a learned ranker reaches 51.3\% and does not beat the
+canonical rule mapping---a negative result, since a learned policy is the current default.
+Repair is class-dependent (about 96\% for misuse
+and contradictory evidence, 41\% for planning error) and timing-dependent (71.7\% when the fault
+is detected before it propagates, 50.8\% when detection is late). Agents claim success 45.6\% of
+the time but succeed 28.0\% of the time, so 38.4\% of success claims are wrong.
+
+The work fits the journal's coverage of software engineering for AI systems and of software
+reliability: the contribution is not a new agent but a measurement instrument and an empirical
+evaluation, with the harness, evaluator, fault schedule and analysis script released so that
+later work can extend or contest every number. All environments are simulated, and the
+manuscript states that it measures relative reliability under controlled faults, not production
+reliability.
+
+The manuscript is original, is not published or under consideration elsewhere, and I am its sole
+author, with no competing interests and no funding. The dataset, detector, ranker and results are
+openly available from the Hugging Face Hub and the harness, evaluator and analysis script from
+GitHub under the MIT licence (tag \texttt{arb-1.0.0}); no credential is needed to reproduce any
+reported number.
+
+Thank you for considering the submission; correspondence should be addressed to me at the e-mail
+above.
+
+Yours sincerely,
+
+\vspace{1.2em}
+Fahad Hafeez\\
+Newcastle University
+
+\end{document}

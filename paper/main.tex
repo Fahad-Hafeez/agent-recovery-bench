@@ -1,29 +1,42 @@
-\documentclass[11pt]{article}
-\usepackage[letterpaper,margin=1in]{geometry}
-\usepackage{times}
+%% ---------------------------------------------------------------------------
+%% Submission version for the Journal of Systems and Software (Elsevier).
+%% Class: elsarticle, "review" option = single column, double spacing and line
+%% numbers, which is the layout Elsevier asks for at submission. Switch to
+%% [preprint,12pt] to drop the line numbers, and to [final,1p] only for the
+%% publisher's own typesetting.
+%% ---------------------------------------------------------------------------
+\documentclass[review,12pt]{elsarticle}
+
 \usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
 \usepackage{microtype}
-\usepackage[round,numbers]{natbib}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
+% Allow long repository URLs to break at any character instead of running into the margin.
+\usepackage{xurl}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{enumitem}
 \usepackage{fancyvrb}
-% Let long \texttt{} file paths break across lines; without this, a paragraph that
-% names three paths runs into the margin and cannot be fixed by stretching spaces.
+% Journal text area is narrower than the preprint layout these tables were built for:
+% every generated tabular is wrapped in a max-width box by paper/analysis.py.
+\usepackage{adjustbox}
+\usepackage{lineno}
+% Let long \texttt{} file paths break across lines; without this, a paragraph
+% that names three paths runs into the margin and cannot be fixed by
+% stretching spaces.
 \usepackage[htt]{hyphenat}
-\usepackage{titlesec}
-\captionsetup{font=small,labelfont=bf}
-% Long \texttt{} paths are unbreakable; let TeX stretch spaces instead of running
-% into the margin on the few paragraphs that quote several of them at once.
+
+% Long \texttt{} paths are unbreakable; let TeX stretch spaces instead of
+% running into the margin on the few paragraphs that quote several at once.
 \setlength{\emergencystretch}{2em}
 \setlist[itemize]{leftmargin=1.2em,itemsep=1pt,topsep=3pt}
-\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
-\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\setlist[enumerate]{leftmargin=1.4em}
+
 \newcommand{\arb}{\textsc{Agent Recovery Bench}}
 \newcommand{\ttd}{\texttt{TTD}}
 \newcommand{\ttr}{\texttt{TTR}}
@@ -33,40 +46,62 @@
 \input{generated/macros_stats.tex}
 \input{generated/macros_detection_ci.tex}
 
-\title{\textbf{Agent Recovery Bench: Measuring Whether Failures Are Detected\\
-Early and Repaired Reliably in Tool-Using and Multi-Agent Workflows}}
-\author{Anonymous submission}
-\date{}
+\journal{Journal of Systems and Software}
 
 \begin{document}
-\maketitle
+
+\begin{frontmatter}
+
+\title{Agent Recovery Bench: Measuring Whether Failures Are Detected Early and
+Repaired Reliably in Tool-Using and Multi-Agent Workflows}
+
+\author[ncl]{Fahad Hafeez\corref{cor1}}
+\ead{f.hafeez2@newcastle.ac.uk}
+\cortext[cor1]{Corresponding author.}
+\affiliation[ncl]{organization={Newcastle University},
+  city={Newcastle upon Tyne},
+  postcode={NE1 7RU},
+  country={United Kingdom}}
 
 \begin{abstract}
 Task-success leaderboards tell us whether an agent finished, not why it failed, whether it
 noticed, or whether the repair was worth its cost. We introduce \arb{}, a benchmark for the
-\emph{detection and recovery} half of agent reliability. \arb{} contributes (i) a compact
-seven-class failure taxonomy---misuse/invalid arguments, stale state, contradictory evidence,
-planning error, communication failure, objective drift, and unrecoverable external error---whose
-classes are defined by the \emph{signal} that identifies them and the \emph{operator} that repairs
-them; (ii) four deterministic tool environments (refunds, data migration, inventory accounting, and
-a three-role procurement desk) in which success is verified from world state rather than from the
-agent's report; (iii) a controlled fault-injection harness that replays an identical reference
-trajectory with and without a scheduled fault, screening out non-harmful injections so that
-detection and recovery are measured only where failure actually changes the outcome; and (iv) a
-protocol comparing no recovery, retry-only, rule-based, and model-based recovery under a fixed price
-sheet. Across \NumHarmful{} harmful task--fault pairs and \NumEpisodes{} evaluated episodes, a
-rule-based detector reaches step-level AUC \AucRules{} (F1 \RulesFone{}), and the rule-based
-recovery policy repairs \RecRules\% of harmful failures against \RecNoRecovery\% with no recovery
-and \RecRetry\% with retries alone; a learned ranker reaches \RecModel\% and does not beat the
-canonical mapping. Recovery is strongly class-dependent (from \emph{misuse} and
-\emph{contradictory evidence} at roughly 96\% down to \emph{planning error} at 41\% and
-\emph{objective drift} at 52\%) and timing-dependent: failures detected before they propagate are
-recovered \EarlyRec\% of the time versus \LateRec\% when detection is late. Agents claim success
-\ClaimedPct\% of the time and succeed \VerifiedPct\% of the time, so
-\FalseClaimPct\% of success claims are wrong---a gap that any evaluation based on self-report would
-score as progress. All environments are simulated: \arb{} measures \emph{relative} reliability
-under controlled faults, not production reliability.
+\emph{detection and recovery} half of agent reliability. \arb{} contributes (i) a seven-class
+failure taxonomy---misuse/invalid arguments, stale state, contradictory evidence, planning error,
+communication failure, objective drift, unrecoverable external error---defined by the signal that
+identifies each class and the operator that repairs it; (ii) four deterministic tool environments
+in which success is verified from world state rather than from the agent's report; (iii) a
+fault-injection harness that replays an identical reference trajectory with and without a
+scheduled fault, screening out non-harmful injections; and (iv) a protocol comparing no recovery,
+retry-only, rule-based and model-based recovery under a fixed price sheet. Across \NumHarmful{}
+harmful pairs and \NumEpisodes{} episodes, a rule-based detector reaches step-level AUC
+\AucRules{} (F1 \RulesFone{}), and rule-based recovery repairs \RecRules\% of harmful failures
+against \RecNoRecovery\% with no recovery and \RecRetry\% with retries alone; a learned ranker
+reaches \RecModel\% and does not beat the canonical mapping. Recovery is class-dependent (from
+\emph{misuse} and \emph{contradictory evidence} at roughly 96\% to \emph{planning error} at
+41\%) and timing-dependent: failures detected before they propagate are recovered \EarlyRec\% of
+the time versus \LateRec\% when detection is late. Agents claim success \ClaimedPct\% of the
+time and succeed \VerifiedPct\% of the time, so \FalseClaimPct\% of success claims are wrong. All
+environments are simulated: \arb{} measures \emph{relative} reliability under controlled faults,
+not production reliability.
 \end{abstract}
+
+\begin{highlights}
+\item Isolates failure detection and repair in tool-using multi-agent LLM systems.
+\item Seven-class fault taxonomy ties each class to its signal and repair operator.
+\item Success is graded from world state, never from the agent's success claim.
+\item Rule-based recovery repairs 60.9\% of harmful faults; a learned ranker does not.
+\item Harness, dataset, models and leaderboard protocol are released under MIT.
+\end{highlights}
+
+\begin{keyword}
+Multi-agent systems \sep LLM agents \sep Failure detection \sep Automated repair
+\sep Benchmarking \sep Software reliability
+\end{keyword}
+
+\end{frontmatter}
+
+\linenumbers
 
 \input{sections/01_intro}
 \input{sections/02_related}
@@ -77,124 +112,37 @@ under controlled faults, not production reliability.
 \input{sections/07_release}
 \input{sections/08_appendix}
 
-\bibliographystyle{plain}
-\begin{thebibliography}{99}\small
+%% ------------------------- Elsevier back matter ----------------------------
+\section*{CRediT authorship contribution statement}
 
-\bibitem{yao2023react} S. Yao, J. Zhao, D. Yu, N. Du, I. Shafran, K. Narasimhan, Y. Cao.
-ReAct: Synergizing reasoning and acting in language models. \emph{ICLR}, 2023.
+\textbf{Fahad Hafeez:} Conceptualization, Methodology, Software, Validation, Formal analysis,
+Investigation, Data curation, Visualization, Writing -- original draft, Writing -- review and
+editing.
 
-\bibitem{shinn2023reflexion} N. Shinn, F. Cassano, A. Gopinath, K. Narasimhan, S. Yao.
-Reflexion: Language agents with verbal reinforcement learning. \emph{NeurIPS}, 2023.
+\section*{Declaration of competing interest}
 
-\bibitem{yao2024taubench} S. Yao, N. Shinn, P. Razavi, K. Narasimhan.
-$\tau$-bench: A benchmark for tool-agent-user interaction in real-world domains.
-\emph{ICLR}, 2025. arXiv:2406.12045.
+The author declares that he has no known competing financial interests or personal relationships
+that could have appeared to influence the work reported in this paper.
 
-\bibitem{taubench2} V. Barres et al. $\tau^2$-bench: Evaluating conversational agents in a
-dual-control environment. arXiv:2506.07982, 2025.
+\section*{Funding}
 
-\bibitem{zhang2025whowhen} S. Zhang, M. Zhang, J. Ma, Y. Yang, Y. Zhang, Z. Liu, C. Yang.
-Which agent causes task failures? Attributing failures in multi-agent systems.
-\emph{ICML}, 2025. arXiv:2505.00212.
+This research did not receive any specific grant from funding agencies in the public, commercial,
+or not-for-profit sectors.
 
-\bibitem{cemri2025mast} M. Cemri, M. Pan, S. Yang, L. Agrawal, B. Chopra, R. Tiwari, K. Keutzer,
-A. Parameswaran, D. Klein, A. Ramakrishnan, S. Sinha, K. Narasimhan.
-Why do multi-agent LLM systems fail? \emph{NeurIPS Datasets and Benchmarks}, 2025.
-arXiv:2503.13657.
+\section*{Data availability}
 
-\bibitem{suzgun2025failuretaxonomy} M. Suzgun, M. Yuksekgonul, F. Bianchi, D. Jurafsky, J. Zou.
-Measuring and mitigating thinking failures in reasoning models. arXiv:2506.12179, 2025.
+The dataset (episodes, steps, mini split and the \texttt{llm} controller arm), the fitted detector,
+the recovery ranker and the LLM-arm results are openly available from the Hugging Face Hub at
+\url{https://huggingface.co/datasets/fahadhafeezofficial/agent-recovery-bench} and
+\url{https://huggingface.co/fahadhafeezofficial/agent-recovery-bench-models}. The harness, the
+reference agents, the evaluator, the experiment grid and the analysis script that emits every
+table and figure are openly available at
+\url{https://github.com/Fahad-Hafeez/agent-recovery-bench} under the MIT licence, tag
+\texttt{arb-1.0.0}, with an immutable snapshot at
+\url{https://github.com/Fahad-Hafeez/agent-recovery-bench/archive/refs/tags/arb-1.0.0.tar.gz}.
+No credential is required to reproduce any reported number.
 
-\bibitem{hsueh1997fault} M.-C. Hsueh, T. K. Tsai, R. K. Iyer. Fault injection techniques and
-tools. \emph{IEEE Computer}, 30(4):75--82, 1997.
-
-\bibitem{scully2015fault} Z. Scully, G. Cottrell, M. Egele. Fault injection for software
-reliability. \emph{IEEE Software}, 32(4), 2015.
-
-\bibitem{lightstone2004chaos} S. Lightstone. Chaos engineering for distributed systems.
-\emph{ACM Queue}, 2004.
-
-\bibitem{basiri2016chaos} A. Basiri, N. Behnam, R. de Rooij, L. Hochstein, L. Kosewski,
-J. Reynolds, C. Rosenthal. Chaos engineering. \emph{IEEE Software}, 33(3):35--41, 2016.
-
-\bibitem{amodei2016concrete} D. Amodei, C. Olah, J. Steinhardt, P. Christiano, J. Schulman,
-D. Man\'e. Concrete problems in AI safety. arXiv:1606.06565, 2016.
-
-\bibitem{lightman2023prm} H. Lightman, V. Kosaraju, Y. Burda, H. Edwards, B. Baker, T. Lee,
-J. Leike, J. Schulman, I. Sutskever, K. Cobbe. Let's verify step by step. \emph{ICLR}, 2024.
-
-\bibitem{uesato2022safety} J. Uesato, N. Kushman, R. Kumar, F. Song, N. Siegel, L. Wang,
-A. Creswell, G. Irving, I. Higgins. Solving math word problems with process- and outcome-based
-feedback. arXiv:2211.14275, 2022.
-
-\bibitem{wang2024survey} L. Wang, C. Ma, X. Feng, Z. Zhang, H. Yang, J. Zhang, Z. Chen, J. Tang,
-X. Chen, Y. Lin, W. X. Zhao, Z. Wei, J.-R. Wen. A survey on large language model based autonomous
-agents. \emph{Frontiers of Computer Science}, 18(6), 2024.
-
-\bibitem{kim2023agents} Y. Kim, C. Kim, J. Lee, S. Lee, H. Lim. A survey on LLM-based agent
-evaluation: from components to systems. \emph{EMNLP Findings}, 2024.
-
-\bibitem{liu2023agentbench} X. Liu, H. Yu, H. Zhang, Y. Xu, X. Lei, H. Lai, Y. Gu, H. Ding,
-K. Men, K. Yang, S. Zhang, X. Deng, A. Zeng, Z. Du, C. Zhang, S. Shen, T. Zhang, Y. Su, H. Sun,
-M. Huang, Y. Dong, J. Tang. AgentBench: Evaluating LLMs as agents. \emph{ICLR}, 2024.
-
-\bibitem{mialon2023gaia} G. Mialon, C. Fourrier, C. Swift, T. Wolf, Y. LeCun, T. Scialom.
-GAIA: A benchmark for general AI assistants. \emph{ICLR}, 2024.
-
-\bibitem{zhou2023webarena} S. Zhou, F. F. Xu, H. Zhu, X. Zhou, R. Lo, A. Sridhar, X. Cheng,
-T. Ou, Y. Bisk, D. Fried, U. Alon, G. Neubig. WebArena: A realistic web environment for building
-autonomous agents. \emph{ICLR}, 2024.
-
-\bibitem{deng2023mind2web} X. Deng, Y. Gu, B. Zheng, S. Chen, S. Stevens, B. Wang, H. Sun,
-Y. Su. Mind2Web: Towards a generalist agent for the web. \emph{NeurIPS}, 2023.
-
-\bibitem{patil2023gorilla} S. G. Patil, T. Zhang, X. Wang, J. E. Gonzalez. Gorilla: Large language
-model connected with massive APIs. arXiv:2305.15334, 2023.
-
-\bibitem{qin2023toolllm} Y. Qin, S. Liang, Y. Ye, K. Zhu, L. Yan, Y. Lu, Y. Lin, X. Cong,
-X. Tang, B. Qian, S. Zhao, L. Hong, R. Tian, R. Xie, J. Zhou, M. Gerstein, D. Li, Z. Liu,
-M. Sun. ToolLLM: Facilitating large language models to master 16000+ real-world APIs.
-\emph{ICLR}, 2024.
-
-\bibitem{wang2024voyager} G. Wang, Y. Xie, Y. Jiang, A. Mandlekar, C. Xiao, Y. Zhu, L. Fan,
-A. Anandkumar. Voyager: An open-ended embodied agent with large language models.
-\emph{TMLR}, 2024.
-
-\bibitem{huang2024selfcorrect} J. Huang, X. Chen, S. Mishra, H. S. Zheng, A. W. Yu, X. Song,
-D. Zhou. Large language models cannot self-correct reasoning yet. \emph{ICLR}, 2024.
-
-\bibitem{kamoi2024selfcorrection} M. Kamoi, Y. Zhang, N. Zhang, J. Han, R. Zhang.
-When can LLMs actually correct their own mistakes? \emph{TACL}, 2024.
-
-\bibitem{olausson2024selfrepair} T. Olausson, J. P. Inala, C. Wang, J. Gao, A. Solar-Lezama.
-Is self-repair a silver bullet for code generation? \emph{ICLR}, 2024.
-
-\bibitem{chen2024selfdebug} X. Chen, M. Lin, N. Sch\"arli, D. Zhou. Teaching large language
-models to self-debug. \emph{EMNLP}, 2024.
-
-\bibitem{zhu2025where} K. Zhu, Z. Yin, J. Li, Y. Yang. Where do LLM agents fail? A
-trajectory-level taxonomy. arXiv:2504.05370, 2025.
-
-\bibitem{efron1993bootstrap} B. Efron, R. J. Tibshirani. \emph{An Introduction to the Bootstrap}.
-Chapman \& Hall, 1993.
-
-\bibitem{wilson1927} E. B. Wilson. Probable inference, the law of succession, and statistical
-inference. \emph{JASA}, 22(158):209--212, 1927.
-
-\bibitem{guo2017calibration} C. Guo, G. Pleiss, Y. Sun, K. Q. Weinberger. On calibration of modern
-neural networks. \emph{ICML}, 2017.
-
-\bibitem{cobbe2021gsm8k} K. Cobbe, V. Kosaraju, M. Bavarian, M. Chen, H. Jun, L. Kaiser,
-M. Plappert, J. Tworek, J. Hilton, R. Nakano, C. Hesse, J. Schulman. Training verifiers to solve
-math word problems. arXiv:2110.14168, 2021.
-
-\bibitem{hendrycks2021ethics} D. Hendrycks, N. Carlini, J. Schulman, J. Steinhardt.
-Unsolved problems in ML safety. arXiv:2109.13916, 2021.
-
-\bibitem{raji2021ai} I. D. Raji, E. M. Bender, A. Paullada, E. Denton, A. Hanna. AI and the
-everything in-between: The role of benchmarks in a broader evaluation ecosystem. \emph{NeurIPS
-Datasets and Benchmarks}, 2021.
-
-\end{thebibliography}
+\bibliographystyle{elsarticle-num}
+\bibliography{refs}
 
 \end{document}

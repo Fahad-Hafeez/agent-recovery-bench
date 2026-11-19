@@ -3,6 +3,7 @@
 \setlength{\tabcolsep}{4pt}
 \caption{Exact McNemar tests over the 861 harmful pairs: all six policy contrasts, Holm-corrected across the six. $b$ counts episodes the first system recovered and the second did not, $c$ the reverse. The canonical mapping beats the learned ranker: $b=104$ against $c=22$.}
 \label{tab:appendix_tests_policy}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lrrrcc@{}}
 \toprule
 Comparison & Pairs & $b$ & $c$ & $p$ & $p_{\text{Holm}}$ \\
@@ -15,4 +16,5 @@ Retry only vs Model-based & 861 & 0 & 442 & \ensuremath{<}0.001 & \ensuremath{<}
 Rule-based vs Model-based & 861 & 104 & 22 & \ensuremath{<}0.001 & \ensuremath{<}0.001 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

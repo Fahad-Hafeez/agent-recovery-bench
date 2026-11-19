@@ -16,6 +16,7 @@ model: \emph{surface} classes are visible in error codes or version counters, \e
 require cross-referencing evidence or the objective specification. \emph{Canonical remediation} is
 the operator a domain expert prescribes; it defines the rule-based reference policy.}
 \label{tab:taxonomy}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{@{}lllll@{}}
 \toprule
 Class & Detectability & Track & Canonical remediation & Recoverable \\
@@ -29,6 +30,7 @@ objective\_drift & latent & single+multi & \texttt{reanchor\_objective} & yes \\
 unrecoverable\_external\_error & surface & single+multi & \texttt{escalate\_abort} & no (contain) \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table*}
 
 The split between \emph{surface} and \emph{latent} is the load-bearing distinction. A surface class
